@@ -1,17 +1,17 @@
 package it.saezzt.avisalbissole;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CalendarView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -19,19 +19,31 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 
-import static java.lang.System.currentTimeMillis;
+import it.saezzt.avisalbissole.util.DataConvert;
+import it.saezzt.avisalbissole.util.DataMap;
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
     GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "SignInActivity";
-    private List<Date> Donazioni = new LinkedList<>();
-    private AmbuViewModel model;
+    private ArrayList<Date> Donazioni = new ArrayList<>();
+    //private AmbuViewModel model;
+    private DatabaseReference mFirebaseDatabaseReference;
+    private static final String DB = "Donazioni";
+    private DataMap date;
+    Fragment fragment_loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +51,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         // Create a ViewModel the first time the system calls an activity's onCreate() method.
         // Re-created activities receive the same MyViewModel instance created by the first activity.
-        model = new ViewModelProvider(this).get(AmbuViewModel.class);
+        //model = new ViewModelProvider(this).get(AmbuViewModel.class);
 
         // Configure sign-in to request the user's ID, email address, and basic profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -51,6 +63,27 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
         // creo il listener per il button del login
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        //opero sul DB
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        ValueEventListener dateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Prendo gli oggetti dal db e li uso per l'aggiornamento della ui
+                GenericTypeIndicator<HashMap<String,String>> temp = new GenericTypeIndicator<HashMap<String, String>>() {};
+                HashMap<String,String> xtemp = dataSnapshot.getValue(temp);
+                date = new DataMap(xtemp);
+                for (int i=0;i<date.getDate().size();i++)
+                    Log.i("lettura da DB ",date.getDate().get(i));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        mFirebaseDatabaseReference.child(DB).addListenerForSingleValueEvent(dateListener);
     }
 
     @Override
@@ -96,11 +129,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     private void preference() {
         //TODO caricamento preferenze: gestire il nuovo fragment per la lista preferenze
-        /*FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = new ItemListDialogFragment();
-        fragmentTransaction.add(R.id.main_fragment, fragment);
-        fragmentTransaction.commit();*/
     }
 
     private int Day = 0;
@@ -143,8 +171,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {
-            Toast toast = Toast.makeText(getApplicationContext(),"EVIL"+ e.getStatusCode(),Toast.LENGTH_SHORT);
-            toast. show();
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
@@ -153,48 +179,66 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void updateUI(GoogleSignInAccount account) {
-        if (account == null){
-            Toast toast = Toast.makeText(getApplicationContext(),"nessun account collegato",Toast.LENGTH_SHORT);
-            toast. show();
-        } else {
-            /*
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            Fragment fragment = Ambu.newInstance();
-            fragmentTransaction.add(R.id.main_fragment, fragment);
-            /*
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            Fragment fragment = new Fragment();
-            fragmentTransaction.add(R.id.main_fragment, fragment);
-            fragmentTransaction.commit();
-            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-            */
-
-            Donazioni.addAll((model.getDonazioni()));
-            findViewById(R.id.sign_out_button).setOnClickListener(this);
+        if (account != null){
+            //si disabilità il login e si mostra il mainfragment
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.main_fragment).setVisibility(View.VISIBLE);
-            CalendarView calendarView = findViewById(R.id.calendarView);
-
-            long j = currentTimeMillis()-864000000;
-            for (int i=0; i<12; i++){
-                long k = 864000000;
-                Donazioni.add(new Date(j));
-                j = j + k*3;
+            if(date != null){
+                //L'Arraylist dei dati scaricati dal DB viene caricato per il calendario
+                DataConvert util = new DataConvert();
+                for (Date data:util.multiDataConvert(date.getDate())) {
+                    Donazioni.add(data);
+                }
+                //riordino Donazioni
+                Collections.sort(Donazioni);
+                //Si attivano i Listener e le visibilità per le view
+                findViewById(R.id.sign_out_button).setOnClickListener(this);
+                CalendarView calendarView = findViewById(R.id.calendarView);
+                findViewById(R.id.giorno01).setOnClickListener(this);
+                findViewById(R.id.giorno02).setOnClickListener(this);
+                findViewById(R.id.preferenze).setOnClickListener(this);
+                //data di partenza per il calendario
+                if (Donazioni.size() != 0){
+                    for (Date date: Donazioni) {
+                        if(date.after(new Date(System.currentTimeMillis()))){
+                            calendarView.setDate(date.getTime());
+                            break;
+                        }
+                    }
+                }
+            }else {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragment_loader = new Loader();
+                fragmentTransaction.add(R.id.main_fragment, fragment_loader);
+                fragmentTransaction.commit();
+                new waiting().execute(account);
             }
-            if (Donazioni.size() != 0)calendarView.setDate(Donazioni.get(0).getTime());
-
-            findViewById(R.id.preferenze).setOnClickListener(this);
-            findViewById(R.id.giorno01).setOnClickListener(this);
-            findViewById(R.id.giorno02).setOnClickListener(this);
         }
     }
-    private void countdown(int s){
-        long start = System.currentTimeMillis();
-        while (System.currentTimeMillis()-start<s){
-
+    private class waiting extends AsyncTask<GoogleSignInAccount, Integer, GoogleSignInAccount>{
+        @Override
+        protected GoogleSignInAccount doInBackground(GoogleSignInAccount... accounts) {
+            Long start = System.currentTimeMillis();
+            while (true){
+                if(date != null)return accounts[0];
+                if(System.currentTimeMillis()-start>5000) Log.i("Attesa del DB","DB non risponde, controllare connessione di rete");
+            }
         }
-        //TODO eliminare a programma finito se non usato
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(GoogleSignInAccount account) {
+            super.onPostExecute(account);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment_loader);
+            fragmentTransaction.commit();
+            updateUI(account);
+        }
     }
 }

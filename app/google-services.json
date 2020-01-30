@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1071058038218",
+    "firebase_url": "https://avis-1580044354371.firebaseio.com",
+    "project_id": "avis-1580044354371",
+    "storage_bucket": "avis-1580044354371.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071058038218:android:4559bd1d5bd50ae7847333",
+        "android_client_info": {
+          "package_name": "it.saezzt.avisalbissole"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071058038218-72i7ghc2eluq3df5hkr6vv9d85k5vkhn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.saezzt.avisalbissole",
+            "certificate_hash": "56e8ff7a9020ab95023b9de4699d7644c69aae7e"
+          }
+        },
+        {
+          "client_id": "1071058038218-j91b85r8dnmc2ikimso3maunq7n2muv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUjqXPrYoCO-l-sZ5Hur_jDY-6umwMBWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071058038218-j91b85r8dnmc2ikimso3maunq7n2muv6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

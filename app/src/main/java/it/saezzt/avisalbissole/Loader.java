@@ -9,25 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class Ambu extends Fragment {
-
-    private AmbuViewModel mViewModel;
-
-    public static Ambu newInstance() {
-        return new Ambu();
+public class Loader extends Fragment {
+    public static Loader newInstance() {
+        return new Loader();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.ambu_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_loader, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // TODO: Use the ViewModel
-
     }
 
     @Override

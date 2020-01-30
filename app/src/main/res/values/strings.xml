@@ -14,4 +14,9 @@
     <string name="giorno01">Giornata successiva</string>
     <string name="giorno02">Giornata precedente</string>
     <string name="descrizione_preferenze">setup e preferenze</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">In attesa dei dati...</string>
+
 </resources>

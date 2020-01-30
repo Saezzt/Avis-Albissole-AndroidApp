@@ -1,10 +1,7 @@
 package it.saezzt.avisalbissole;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,4 +34,5 @@ public class AmbuViewModel extends ViewModel {
         }
         return Donazioni;
     }
+
 }
