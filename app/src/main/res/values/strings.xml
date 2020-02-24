@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">Avis delle Albissole</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="app_name">Avis delle Albisole</string>
+    <string name="label_short">Avis Albisole</string>
+    <string name="SP_name">setup</string>
+
+    <string name="title_activity_login">Main</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -10,13 +13,31 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="titolo_giornate_donazioni">Giornate di Donazione</string>
+    <string name="titolo_giornate_eventi">Eventi in programma</string>
     <string name="logout_button">Disconnetti</string>
+    <string name="login_button">Connetti</string>
     <string name="giorno01">Giornata successiva</string>
     <string name="giorno02">Giornata precedente</string>
     <string name="descrizione_preferenze">setup e preferenze</string>
+    <string name="loading">Caricamento dei dati</string>
+    <string name="channel_name">AvisChannel</string>
+    <string name="channel_description">NotificheGiorni Donazione</string>
+    <string name="ambunotify">Avviso dall\'ambulatorio</string>
+    <string name="AlarmTime">AlarmTime</string>
+    <string name="AvisLogo">Avis Logo</string>
+    <string name="tagTextView">dbPayload</string>
+    <string name="titlecard">Dettagli dell\'evento</string>
+    <string name="buttonMap">Cerca sulla mappa</string>
+    <string name="buttonReminder">Aggiungi al  tuo Calendario</string>
+    <string name="AlarmSet">AlarmSet</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="loading">In attesa dei dati...</string>
+    <string name="Feedback_subject">Feedback sull\'App AVIS Albisole</string>
 
+    <string name="AlarmSetting_title">Attiva notifica donazione</string>
+    <string name="CalendarAlarmSet_title">Attiva notifiche del Calendario</string>
+
+    <string name="preference_title">preference_title</string>
+    <string name="AlarmSetting">AlarmSetting</string>
+    <string name="CalendarAlarmSet">CalendarAlarmSet</string>
+    <string name="feedback">feedback</string>
 </resources>

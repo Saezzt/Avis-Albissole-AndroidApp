@@ -9,8 +9,8 @@ import java.util.Date;
 
 public class DataConvert {
 
-    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MMMMMMMMM/yyyy");
-    private static final String TAG = "DataConvert: ";
+    private SimpleDateFormat formatter = new SimpleDateFormat("dd/MMMMMMMMM/yyyy/HH/mm");
+    private static final String TAG = "DataConvert";
 
     public Date dataConvert(String dateInString) {
         //TODO da gestire in caso di mese errato da DB? Al momento crasha segnalando l'errore come da catch.Il crash avviene nel caso si svolga tutto l'arraylist (l'errore genera un null pointer)
@@ -24,10 +24,12 @@ public class DataConvert {
             return null;
         }
     }
+
     public ArrayList<Date> multiDataConvert(ArrayList<String> arrayDateInString) {
         ArrayList<Date> arrayDate = new ArrayList();
-        for ( String dateInString: arrayDateInString ) {
-                   arrayDate.add(dataConvert(dateInString));
+        for (String dateInString : arrayDateInString) {
+            Date date = dataConvert(dateInString);
+            if (date != null) arrayDate.add(date);
         }
         return arrayDate;
     }

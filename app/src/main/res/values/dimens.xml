@@ -5,4 +5,6 @@
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_spacing_half">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="tittleDim">18sp</dimen>
+    <dimen name="testoCard">15sp</dimen>
 </resources>

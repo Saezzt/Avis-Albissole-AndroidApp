@@ -7,5 +7,31 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="title">
+        <item name="android:textColor">#009EE2</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="rowStyleBlue">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">#009EE2</item>
+        <item name="android:paddingLeft">24dp</item>
+    </style>
+    <style name="rowStyleWhite">
+        <item name="android:textColor">#009EE2</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:paddingLeft">24dp</item>
+    </style>
+    <style name="rowStyleCard">
+        <item name="android:textColor">#009EE2</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <style name="rowStyleCardText">
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>

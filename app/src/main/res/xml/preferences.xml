@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:background="@color/colorBar"
+        android:title="Menu Preferenze"
+        app:key="preference_title" />
+    <SwitchPreferenceCompat
+        app:key="AlarmSetting"
+        app:summary="permette di essere avvisati tramite notifica push 12 ore prima di ogni evento o donazione."
+        app:title="@string/AlarmSetting_title" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="CalendarAlarmSet"
+        android:summary="permette di attivare un allarme 12 ore dell'evento se aggiunto al calendario"
+        android:title="@string/CalendarAlarmSet_title" />
+    <Preference
+        app:key="feedback"
+        app:summary="Comunica problemi tecnici o suggerisci nuove modifiche."
+        app:title="Invia un feedback" />
+
+</PreferenceScreen>
