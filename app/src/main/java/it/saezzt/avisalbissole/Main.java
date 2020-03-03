@@ -62,7 +62,6 @@ import it.saezzt.avisalbissole.util.dbEvent;
 
 import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
 //TODO metodo per primo avvio con guida
-//TODO creazione reminder dell'APP per le donazioni
 public class Main extends AppCompatActivity implements View.OnClickListener {
     final int callbackId = 42; //callback per controllo permessi
     Boolean dbLoaded = false; //per il check in updateUI (creo una sola volta le textview)
@@ -138,6 +137,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
 
         // creo il listener per il button del login
         findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.buttonNoLog).setOnClickListener(this);
 
         //opero sul DB
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -185,6 +185,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
 
         //check permission
         checkPermission(callbackId, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+
     }
 
     @Override
@@ -204,6 +205,12 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         super.onResume();
         sharedPref.registerOnSharedPreferenceChangeListener(alarmListener);
         comeBack();
+        //Questo per sistemare la perdita dei dati visibili al rientro. (accadeva solo per gli eventi)
+        if(!vistaDonazioni) {
+            for (int i = 0; i < Eventi.size(); i++) {
+                findViewById(Eventi.get(i)).setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -218,6 +225,11 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             case R.id.sign_in_button:
             {
                 signIn();
+                break;
+            }
+            case R.id.buttonNoLog:
+            {
+                goIn();
                 break;
             }
             //R.id.sign_out_button sotto ridefinito a 0 nell'attesa
@@ -271,6 +283,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             }
             case R.id.buttonToMap:
             {
+                Log.i("buttonToMap","cliccato");
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q="+findViewById(R.id.buttonToMap).getTag(R.id.where));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
@@ -281,6 +294,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             }
             case R.id.buttonReminder:
             {
+                Log.i("buttonReminder","cliccato");
                 long calID = 0;
                 String displayName = null;
                 String accountName = null;
@@ -404,8 +418,12 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         TextView tmp = findViewById(id*idFinalRange);
         dbEvent tmpE;
         tmpE = dbEventi.get(id-1);
+        String d;
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"));
+        cal.setTime(tmpE.date);
+        d = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ITALY)+" "+cal.get(Calendar.DAY_OF_MONTH)+" "+cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ITALY);
         child = findViewById(R.id.deData);
-        child.setText(tmp.getText());
+        child.setText(d);
         child.setPadding(2*px,px,2*px,px);
         child = findViewById(R.id.deTipoEvento);
         child.setText(tmpE.title);
@@ -428,10 +446,18 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
         findViewById(R.id.main_fragment).setVisibility(View.VISIBLE);
     }
 
-    private void signOut() {
+    private void goIn() {
+        updateUI(null);
+    }
+
+    public void signOut() {
         mGoogleSignInClient.signOut();
         findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+        findViewById(R.id.buttonNoLog).setVisibility(View.VISIBLE);
+        findViewById(R.id.backViewMain).setVisibility(View.VISIBLE);
+        findViewById(R.id.avisLogoMain).setVisibility(View.VISIBLE);
         findViewById(R.id.main_fragment).setVisibility(View.GONE);
+        findViewById(R.id.settings).setVisibility(View.GONE);
     }
 
     private void signIn() {
@@ -464,9 +490,13 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void updateUI(GoogleSignInAccount account) {
-        if (account != null){
+        //if (account != null){
+        if (true){
             //si disabilità il login e si mostra il mainfragment
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.buttonNoLog).setVisibility(View.GONE);
+            findViewById(R.id.avisLogoMain).setVisibility(View.GONE);
+            findViewById(R.id.backViewMain).setVisibility(View.GONE);
             findViewById(R.id.main_fragment).setVisibility(View.VISIBLE);
             findViewById(R.id.cardOpened).setVisibility(View.GONE);
             if(dbEventi.size()!=0){
@@ -475,7 +505,8 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 //avvio avisAlarmManager se il setup è true
                 SharedPreferences sharedPreferences = this.getSharedPreferences(getString(R.string.SP_name), Context.MODE_PRIVATE);
                 if(sharedPreferences.getBoolean(getString(R.string.AlarmSetting), false))avisAlarmManager(dbEventi);
-                //Si attivano i Listener e le visibilità per le view
+
+                //creo i listener per i pulsanti
                 findViewById(R.id.preferenze).setOnClickListener(this);
                 findViewById(R.id.appSwitch).setOnClickListener(this);
                 findViewById(R.id.buttonToMap).setOnClickListener(this);
@@ -490,22 +521,28 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 new waiting().execute(account);
             }
             //setup calendarLayout
-            LinearLayout calendarLayout = (LinearLayout) findViewById(R.id.calendarLayout);
+            LinearLayout calendarLayout = findViewById(R.id.calendarLayout);
             //aggiunta contenuti
             LinearLayout.LayoutParams tparams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT );
             LinearLayout.LayoutParams cparams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT );
+            LinearLayout.LayoutParams c2params = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT );
+            LinearLayout.LayoutParams c3params = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT );
             Resources r = this.getResources();
             int px = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     9,
                     r.getDisplayMetrics()
             );
+            tparams.setMargins(px/2,0,px/2,0);
             cparams.setMargins(px,px/2,px,px/2);
+            c2params.setMargins(px,px,px,0);
+            c3params.setMargins(px,0,px,0);
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"));
             if ((dbEventi.size() != 0)&dbLoaded==false){
                 int i = 1; //parte da uno affinchè il primo elemento sia dispari
                 int iD = i-1;
                 int iE = i-1;
+                Double type = 1.1;
                 for (dbEvent event: dbEventi) {
                     CardView cardChild = new CardView(this);
                     TextView child = new TextView(this);
@@ -521,23 +558,51 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     child.setPadding(2*px,px,2*px,px);
                     child.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     int j;
-                    if(event.type.equals(new Long(1))){
+                    if(event.type.equals(new Double(1.1))){
                         iD++;
                         j = iD;
                         Donazioni.add(i);
                     }else {
-                        iE++;
-                        j = iE;
+                        if(event.type.equals(type)){
+                            j = iE;
+                            cardChild.setLayoutParams(c3params);
+                            child.setPadding(2*px,0,2*px,px);
+                        }else{
+                            cardChild.setLayoutParams(c2params);
+                            if(dbEventi.size()>=i)
+                                if(dbEventi.get(i+1).type.equals(event.type))
+                                    child.setPadding(2*px,px,2*px,0);
+                            child.setText(event.title +'\n'+ child.getText());
+                            child.setLineSpacing(0,1.2f);
+                            type = event.type;
+                            iE++;
+                            j = iE;
+                        }
                         Eventi.add(i);
                     }
                     if(j%2 != 0){
-                        child.setTextAppearance(this,R.style.rowStyleWhite);
-                        cardChild.setBackgroundColor(getResources().getColor(R.color.white));
-
+                        if(event.type.equals(new Double(1.1))) {
+                            //child.setBackgroundResource(R.drawable.blue_back);
+                            cardChild.setBackgroundColor(getResources().getColor(R.color.white));
+                            child.setTextAppearance(this,R.style.rowStyleWhite);
+                        }
+                        else {
+                            child.setTextAppearance(this,R.style.rowStyleWhite);
+                            cardChild.setBackgroundColor(getResources().getColor(R.color.colorTextBar));
+                            child.setBackgroundResource(R.drawable.white_back);
+                        }
                     }
                     else {
-                        child.setTextAppearance(this,R.style.rowStyleBlue);
-                        cardChild.setBackgroundColor(getResources().getColor(R.color.colorTextBar));
+                        if(event.type.equals(new Double(1.1))) {
+                            //child.setBackgroundResource(R.drawable.blue_back);
+                            cardChild.setBackgroundColor(getResources().getColor(R.color.colorTextBar));
+                            child.setTextAppearance(this,R.style.rowStyleBlue);
+                        }
+                        else {
+                            child.setTextAppearance(this,R.style.rowStyleWhite);
+                            cardChild.setBackgroundColor(getResources().getColor(R.color.colorTextBar));
+                            child.setBackgroundResource(R.drawable.white_back);
+                        }
                     }
                     cardChild.setCardElevation(9);
                     cardChild.setPadding(0,px,0,px);
@@ -548,7 +613,12 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                     calendarLayout.addView(cardChild);
                     cardChild.setOnClickListener(this);
                     i++;
-                }
+                }//QUI sistemo i Layout params per l'ultimo evento del gruppo eventi, così da evitare il taglio dell'ombra dato da c2 o c3
+                LinearLayout.LayoutParams lastParams = (LinearLayout.LayoutParams) findViewById(Eventi.get(Eventi.size()-1)).getLayoutParams();
+                LinearLayout.LayoutParams newLastParams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT );
+                newLastParams.setMargins(lastParams.leftMargin,lastParams.topMargin,lastParams.rightMargin,px/2);
+                findViewById(Eventi.get(Eventi.size()-1)).setLayoutParams(newLastParams);
+                //CONTROLLO del caricamento dati (evito di caricare più volte)
                 dbLoaded = true;
             }
             if(dbLoaded){
@@ -556,7 +626,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
                 LinearLayout toFilterLayout = findViewById(R.id.calendarLayout);
                 for (int i = 0; i < toFilterLayout.getChildCount(); i++) {
                     View v = toFilterLayout.getChildAt(i);
-                    if(v.getTag(R.id.type).equals(new Long(2)))
+                    if(Double.compare((Double)v.getTag(R.id.type),new Double(2.0)) > 0)
                         v.setVisibility(View.GONE);
                 }
             }
@@ -568,7 +638,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener {
             Long start = System.currentTimeMillis();
             while (true){
                 if((dbEventi.size()!=0))return accounts[0];
-                //if(System.currentTimeMillis()-start>5000) Log.i("Attesa del DB","DB non risponde, controllare connessione di rete");
+                //if(System.currentTimeMillis()-start>5000)
 
             }
         }

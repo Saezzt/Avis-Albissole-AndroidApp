@@ -6,6 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".Main">
 
+    <ImageView
+        android:id="@+id/backViewMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/DescBackgroundMain"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorBar" />
+
+    <ImageView
+        android:id="@+id/avisLogoMain"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorBar"
+        android:contentDescription="@string/AvisLogo"
+        android:src="@drawable/avis_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:srcCompat="@drawable/avis_logo" />
+
+    <Button
+        android:id="@+id/buttonNoLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@color/white"
+        android:padding="@dimen/list_item_spacing_half"
+        android:text="@string/NoLog_text"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/NoLogText"
+        app:layout_constraintEnd_toStartOf="@+id/main_fragment"
+        app:layout_constraintStart_toEndOf="@+id/main_fragment"
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment"
         android:name="it.saezzt.avisalbissole.Ambu"
@@ -15,7 +58,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </androidx.fragment.app.FragmentContainerView>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"

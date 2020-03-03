@@ -14,7 +14,9 @@ public class Service extends IntentService {
     public Service(String name) {
         super(name);
     }
-
+    public Service() {
+        super(null);
+    }
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         String intentType = intent.getExtras().getString("caller");

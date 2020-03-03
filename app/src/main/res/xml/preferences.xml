@@ -20,5 +20,12 @@
         app:key="feedback"
         app:summary="Comunica problemi tecnici o suggerisci nuove modifiche."
         app:title="Invia un feedback" />
+    <!--Preference
+        android:id="@+id/preference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="@string/LogKey"
+        app:summary="@string/Logout_summary"
+        app:title="@string/logout_button" /-->
 
 </PreferenceScreen>

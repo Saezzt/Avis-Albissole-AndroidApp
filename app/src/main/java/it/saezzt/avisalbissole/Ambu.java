@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 
 public class Ambu extends Fragment {
 
-    private AmbuViewModel mViewModel;
-
     public static Ambu newInstance() {
         return new Ambu();
     }

@@ -20,6 +20,7 @@
     <string name="giorno02">Giornata precedente</string>
     <string name="descrizione_preferenze">setup e preferenze</string>
     <string name="loading">Caricamento dei dati</string>
+    <string name="loadingLong">In attesa di connessione alla rete</string>
     <string name="channel_name">AvisChannel</string>
     <string name="channel_description">NotificheGiorni Donazione</string>
     <string name="ambunotify">Avviso dall\'ambulatorio</string>
@@ -40,4 +41,8 @@
     <string name="AlarmSetting">AlarmSetting</string>
     <string name="CalendarAlarmSet">CalendarAlarmSet</string>
     <string name="feedback">feedback</string>
+    <string name="NoLog_text">Entra senza account</string>
+    <string name="DescBackgroundMain">Background AVIS albisole APP</string>
+    <string name="Logout_summary">Disconnetti dal tuo account google.</string>
+    <string name="LogKey">LogKey</string>
 </resources>

@@ -32,8 +32,9 @@ public class EventMap {
                 try {
 
                     HashMap<String, Object> eventData = (HashMap<String, Object>) dataO;
-                    dbEvents.add(new dbEvent((Long) eventData.get(tipo), (String) eventData.get(titolo), dataConvert.dataConvert((String) eventData.get(data)), (String) eventData.get(dove), (String) eventData.get(info), (Long) eventData.get(durata)));
-                    Log.i(TAG,eventData.get(tipo).toString()+" "+eventData.get(titolo)+" "+eventData.get(data)+" "+eventData.get(dove)+" "+eventData.get(info)+" "+eventData.get(durata));
+                    dbEvents.add(new dbEvent((Double) eventData.get(tipo), (String) eventData.get(titolo), dataConvert.dataConvert((String) eventData.get(data)), (String) eventData.get(dove), (String) eventData.get(info), (Long) eventData.get(durata)));
+                    //Log.i(TAG,eventData.get(tipo).toString()+" "+eventData.get(titolo)+" "+eventData.get(data)+" "+eventData.get(dove)+" "+eventData.get(info)+" "+eventData.get(durata));
+                    Log.i(TAG,dbEvents.get(dbEvents.size()-1).toString());
                     Log.i(TAG,"giroCompleto");
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage());
